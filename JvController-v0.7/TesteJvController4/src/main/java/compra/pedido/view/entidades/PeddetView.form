@@ -23,12 +23,19 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="gradeView" alignment="0" pref="557" max="32767" attributes="1"/>
-                  <Component id="buttonRemover" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="produtoView" alignment="0" pref="557" max="32767" attributes="1"/>
+                  <Group type="102" attributes="0">
+                      <Component id="produtoView" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="gradeView" pref="651" max="32767" attributes="1"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="buttonRemover" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="buttonAlterarProduto" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -36,12 +43,16 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="buttonRemover" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="produtoView" min="-2" pref="207" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="gradeView" pref="129" max="32767" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="buttonRemover" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="buttonAlterarProduto" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="produtoView" alignment="3" min="-2" pref="870" max="-2" attributes="0"/>
+                  <Component id="gradeView" alignment="3" min="-2" pref="870" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -71,5 +82,10 @@
         </Property>
       </Properties>
     </Container>
+    <Component class="javax.swing.JButton" name="buttonAlterarProduto">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Alterar Produto"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

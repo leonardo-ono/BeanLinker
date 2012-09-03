@@ -31,10 +31,31 @@ public class InstanceCollectionBinding extends InstanceBinding {
     private static JvControllerClassBinding classBinding = JvControllerClassBinding.getInstance();
     private static BeanInstanceELAccessor elContext = BeanInstanceELAccessor.getInstance();
     
-    private Map<Object, Object> views = new HashMap<Object, Object> ();
+    private Map<Object, InstanceBeanBindingAndViewInstance> ibbsAndviews = new HashMap<Object, InstanceBeanBindingAndViewInstance> ();
     
     private JvControllerInstanceBinding instanceBinding
             = new JvControllerInstanceBinding();
+
+    @Override
+    public void removeAllChildrens() throws Exception {
+        elContext.getBeans().values().remove(getModelInstance());
+        elContext.getBeans().values().remove(getViewInstance());
+        
+        instanceBinding.removeAllBindings();
+    }
+
+    private class InstanceBeanBindingAndViewInstance {
+        public InstanceBeanBindingAndViewInstance(InstanceBeanBinding ibb, Object viewInstance) {
+            this.ibb = ibb;
+            this.viewInstance = viewInstance;
+        }
+        private InstanceBeanBinding ibb;
+        private Object viewInstance;
+    }
+    
+    public JvControllerInstanceBinding getInstanceBinding() {
+        return instanceBinding;
+    }
 
     public String getViewItemType() {
         return viewItemType;
@@ -61,9 +82,13 @@ public class InstanceCollectionBinding extends InstanceBinding {
     }
     
     @Override
-    public void updateView() throws Exception {
-        System.out.println("===> updateCollectionView");
+    public void updateView(String ... beanIds) throws Exception {
+        // System.out.println("===> updateCollectionView");
         
+        // Aqui na atualizacao da view para itens da collecao
+        // parte de que remove ou adiciona novos itens
+        // poderia tentar substituir por uma proxy da Collection
+        // interceptando os metodos para add e remover
         Collection viewCollection = null;
         
         if (viewTo.trim().length() > 0) {
@@ -87,16 +112,16 @@ public class InstanceCollectionBinding extends InstanceBinding {
             viewClass = classContext.getViewClasses().get(viewItemType);
         }
         
-        System.out.println(viewClass);
-        System.out.println(modelClass);
+        //System.out.println(viewClass);
+        //System.out.println(modelClass);
 
         // Cria view's novos
         Iterator modelIterator = modelCollection.iterator();
         while (modelIterator.hasNext()) {
             Object modelObj = modelIterator.next();
-            if (!views.containsKey(modelObj)) {
+            if (!ibbsAndviews.containsKey(modelObj)) {
+
                 Object viewObj = viewClass.newInstance();
-                views.put(modelObj, viewObj);
                 String viewId = "col" + UUID.randomUUID().toString().replace("-", "");
                 String modelId = "col" + UUID.randomUUID().toString().replace("-", "");
                 elContext.addBean(viewId, viewObj);
@@ -113,12 +138,29 @@ public class InstanceCollectionBinding extends InstanceBinding {
                     iab.createAndBindAction();
                 }
         
+                // Verifica se itemId eval deve ser utilizado para formar o id do item
                 InstanceBeanBinding ibb = new InstanceBeanBinding();
+                String id = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+                if (itemId.trim().length() > 0) {
+                    elContext.removeBeanById("modelItem");
+                    elContext.addBean("modelItem", modelObj);
+                    elContext.removeBeanById("viewItem");
+                    elContext.addBean("viewItem", modelObj);
+                    id = (String) elContext.evaluate(itemId);
+                    elContext.removeBeanById("modelItem");
+                    elContext.removeBeanById("viewItem");
+                }
+                
+                ibb.setId(id);
                 ibb.setViewFrom(viewId);
                 ibb.setViewTo(viewId);
                 ibb.setModelFrom(modelId);
                 ibb.setModelTo(modelId);
+                ibb.setViewClassAlias(viewClassAlias);
+                ibb.setModelClassAlias(modelClassAlias);
+                
                 instanceBinding.addBeanBinding(ibb);
+                ibbsAndviews.put(modelObj, new InstanceBeanBindingAndViewInstance(ibb, viewObj));
                 
                 if (viewCollection != null) {
                     viewCollection.add(viewObj);
@@ -130,13 +172,17 @@ public class InstanceCollectionBinding extends InstanceBinding {
         }
         
         // Remove view's correspondentes aos modelos excluidos
-        Iterator i = views.entrySet().iterator();
+        Iterator i = ibbsAndviews.entrySet().iterator();
         while (i.hasNext()) {
             Entry e = (Entry) i.next();
             Object modelObj = e.getKey();
             if (!modelCollection.contains(modelObj)) {
-                System.out.println("removendo obj" + modelObj);
-                Object viewObj = views.get(modelObj);
+                
+                //System.out.println("removendo obj" + modelObj);
+                
+                InstanceBeanBindingAndViewInstance ibbavi = ibbsAndviews.get(modelObj);
+                
+                Object viewObj = ibbavi.viewInstance;
                 i.remove();
                 if (viewCollection != null) {
                     viewCollection.remove(viewObj);
@@ -144,11 +190,29 @@ public class InstanceCollectionBinding extends InstanceBinding {
                 if (viewInvokeRemove.trim().length() > 0) {
                     elContext.invoke(viewInvokeRemove, viewObj);
                 }
+                
+                // Remove os objetos do EL Context
+                // elContext.removeBeanByInstance(viewObj);
+                // elContext.removeBeanByInstance(modelObj);
+                
+                // Remove todos os vinculos relacionado a essas instancias
+                InstanceBeanBinding ibb = ibbavi.ibb;
+                instanceBinding.removeBeanBinding(ibb);
+
+                // Remove todas actions relacionadas a essas instancias
+                // As actions nao precisam remover porque elas sao
+                // criadas na hora e nao ficam armazedas em alguma collection
+                
+                // invoke garbage colector ?
+                ibb = null;
+                modelObj = null;
+                viewObj = null;
+                // System.gc();
             }
         }
         
         // update view
-        instanceBinding.updateView();
+        instanceBinding.updateView(beanIds);
         
         // set
         if (viewTo.trim().length() > 0) {
@@ -157,15 +221,57 @@ public class InstanceCollectionBinding extends InstanceBinding {
     }
 
     @Override
-    public void updateModel() throws Exception {
-        System.out.println("===> updateCollectionModel");
+    public void updateModel(String ... beanIds) throws Exception {
+        // System.out.println("===> updateCollectionModel");
+        
+        /* Aqui eh direto, nao precisa
+        String bindingId = "";
+        if (beanIds.length > 0) {
+            bindingId = beanIds[0].trim();
+        }
+        if (bindingId.trim().length() > 0) {
+            bindingId = bindingId.split("\\.")[0];
+            if (beanIds[0].contains(".")) {
+                beanIds[0] = beanIds[0].replace(bindingId + ".", "");
+            }
+            else {
+                beanIds[0] = beanIds[0].replace(bindingId, "");
+            }
+        }        
+         * 
+         */
         
         Collection modelCollection = (Collection) elContext.get(modelFrom);
 
-        instanceBinding.updateModel();
+        instanceBinding.updateModel(beanIds);
         
         // set
         elContext.set(modelTo, modelCollection);        
     }
+
+    // TODO ?
+    @Override
+    public Object getAssociatedModelInstance(Object viewInstance) throws Exception {
+        Object viewObj = elContext.get(viewFrom.split("\\.")[0]);
+        if (viewInstance.equals(viewObj)) {
+            Object modelObj = elContext.get(modelTo.split("\\.")[0]);
+            return modelObj;
+        }
+        
+        return instanceBinding.getAssociatedModelInstance(viewInstance);
+    }
+
+    // TODO ?
+    @Override
+    public Object getAssociatedViewInstance(Object modelInstance) throws Exception {
+        Object modelObj = elContext.get(modelTo.split("\\.")[0]);
+        if (modelInstance.equals(modelObj)) {
+            Object viewObj = elContext.get(viewFrom.split("\\.")[0]);
+            return viewObj;
+        }
+
+        return instanceBinding.getAssociatedViewInstance(modelInstance);
+    }
+    
     
 }

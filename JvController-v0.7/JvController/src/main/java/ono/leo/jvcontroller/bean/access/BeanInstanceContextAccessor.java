@@ -75,8 +75,12 @@ public class BeanInstanceContextAccessor extends BeanInstanceNestedAccessor {
         beans.put(beanId, bean);
     }
 
-    public void removeBean(String beanId) {
+    public void removeBeanById(String beanId) {
         beans.remove(beanId);
+    }
+
+    public void removeBeanByInstance(Object beanInstance) {
+        beans.values().remove(beanInstance);
     }
 
     public void set(String propertyName, Object value) 

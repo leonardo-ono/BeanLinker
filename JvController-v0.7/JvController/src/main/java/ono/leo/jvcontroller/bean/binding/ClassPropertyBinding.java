@@ -29,6 +29,8 @@ public class ClassPropertyBinding extends ClassBinding {
         ipb.setValidator(validator);
         ipb.setViewValueVar(viewValueVar);
         ipb.setModelValueVar(modelValueVar);
+        ipb.setModelClassAlias(modelClassAlias);
+        ipb.setViewClassAlias(viewClassAlias);
         
         //System.out.println("creating instance binding ---> " + ipb);
         

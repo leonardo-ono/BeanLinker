@@ -34,22 +34,22 @@ public class Main implements ActionListener {
         jc.newInstance("main", "Main");
         
         // vincula endereco
-        jc.bindClassProperty("End.textEnder.text", "Cd.endereco", "", "");
-        jc.bindClassProperty("End.textNumero.text", "Cd.numero", "integerConversor", "");
-        jc.bindClassProperty("End.textBairro.text", "Cd.bairro", "", "");
-        jc.bindClassProperty("End.textCidade.text", "Cd.cidade", "", "");
+        jc.bindClassProperty("", "End.textEnder.text", "Cd.endereco", "", "");
+        jc.bindClassProperty("", "End.textNumero.text", "Cd.numero", "integerConversor", "");
+        jc.bindClassProperty("", "End.textBairro.text", "Cd.bairro", "", "");
+        jc.bindClassProperty("", "End.textCidade.text", "Cd.cidade", "", "");
         
         // vincula cliente
-        jc.bindClassProperty("Cli.textCodigo.text", "Bc.codigo", "integerConversor", "");
-        jc.bindClassProperty("Cli.textDataDeNascimento.text", "Bc.dataDeNascimento", "dataConversor", "");
-        jc.bindClassProperty("Cli.textNome.text", "Bc.nome", "", "");
-        jc.bindClassBean("Cli.enderecView", "Bc.ender");
+        jc.bindClassProperty("", "Cli.textCodigo.text", "Bc.codigo", "integerConversor", "");
+        jc.bindClassProperty("", "Cli.textDataDeNascimento.text", "Bc.dataDeNascimento", "dataConversor", "");
+        jc.bindClassProperty("", "Cli.textNome.text", "Bc.nome", "", "");
+        jc.bindClassBean("", "Cli.enderecView", "Bc.ender");
         
         // vincula cliente da view com model
-        jc.bindClassBean("Vix.clienteView", "Ab.cliente");
+        jc.bindClassBean("", "Vix.clienteView", "Ab.cliente");
         
         // vincula instancias da view com model
-        jc.bindInstanceBean("vix", "ab");
+        jc.bindInstanceBean("", "vix", "ab");
  
         jc.getELContext().set("vix.buttonUpdateModel.actionCommand", "updateModel");
         jc.getELContext().set("vix.buttonUpdateView.actionCommand", "updateView");

@@ -41,6 +41,10 @@ public class JvController implements JvControllerInterface {
     public BeanInstanceELAccessor getELContext() {
         return elContext;
     }
+
+    public JvControllerInstanceBinding getInstanceBinding() {
+        return instanceBinding;
+    }
     
     // --- Class context ---
     
@@ -77,15 +81,17 @@ public class JvController implements JvControllerInterface {
     // --- Binding between classes ---
     
     public void bindClassProperty(
+            String bindingId, 
             String view, 
             String model, 
             String conversor, 
             String validator) throws Exception {
         
-        bindClassProperty(view, "", "", model, "", ""
+        bindClassProperty(bindingId, view, "", "", model, "", ""
                 , conversor, "", "", validator, "", "", "", "");
     }
     public void bindClassProperty(
+            String bindingId, 
             String viewFromEval, 
             String viewToEval, 
             String modelFromEval, 
@@ -99,6 +105,7 @@ public class JvController implements JvControllerInterface {
     }
 
     public void bindClassProperty(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -118,6 +125,7 @@ public class JvController implements JvControllerInterface {
 
         
         ClassPropertyBinding pb = new ClassPropertyBinding();
+        pb.setId(bindingId);
         pb.setViewFrom(view.trim().length() > 0 ? view : viewFrom);
         pb.setViewTo(view.trim().length() > 0 ? view : viewTo);
         pb.setModelTo(model.trim().length() > 0 ? model : modelTo);
@@ -147,6 +155,7 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindClassProperty(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -163,6 +172,7 @@ public class JvController implements JvControllerInterface {
             String modelInstance) throws Exception {
         
         ClassPropertyBinding pb = new ClassPropertyBinding();
+        pb.setId(bindingId);
         pb.setViewFrom(view.trim().length() > 0 ? view : viewFrom);
         pb.setViewTo(view.trim().length() > 0 ? view : viewTo);
         pb.setModelTo(model.trim().length() > 0 ? model : modelTo);
@@ -192,8 +202,13 @@ public class JvController implements JvControllerInterface {
         classBinding.addPropertyBinding(pb);
     }
 
-    public void bindClassBean(String view, String model) throws Exception {
+    public void bindClassBean(
+            String bindingId, 
+            String view, 
+            String model) throws Exception {
+        
         ClassBeanBinding cbb = new ClassBeanBinding();
+        cbb.setId(bindingId);
         cbb.setViewFrom(view);
         cbb.setViewTo(view);
         cbb.setModelFrom(model);
@@ -205,6 +220,7 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindClassBean(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -223,6 +239,8 @@ public class JvController implements JvControllerInterface {
     }
 
     public void bindClassCollection(
+            String bindingIdEval, 
+            String itemBindingIdEval, 
             String view, 
             String model,
             String viewInvokeAdd,
@@ -230,6 +248,8 @@ public class JvController implements JvControllerInterface {
             String viewItemType) throws Exception {
         
         ClassCollectionBinding ccb = new ClassCollectionBinding();
+        ccb.setId(bindingIdEval);
+        ccb.setItemId(itemBindingIdEval);
         ccb.setViewFrom(view);
         ccb.setViewTo(view);
         ccb.setModelFrom(model);
@@ -250,6 +270,7 @@ public class JvController implements JvControllerInterface {
     }
 
     public void bindClassCollection(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -299,12 +320,14 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindInstanceProperty(
+            String bindingId, 
             String view, 
             String model, 
             String conversor, 
             String validator) throws Exception {
         
         InstancePropertyBinding ipb = new InstancePropertyBinding();
+        ipb.setId(bindingId);
         ipb.setViewFrom(view);
         ipb.setViewTo(view);
         ipb.setModelTo(model);
@@ -316,6 +339,7 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindInstanceProperty(
+            String bindingId, 
             String viewFromEval, 
             String viewToEval, 
             String modelToEval, 
@@ -326,6 +350,7 @@ public class JvController implements JvControllerInterface {
             String modelValueVar) throws Exception {
         
         InstancePropertyBinding ipb = new InstancePropertyBinding();
+        ipb.setId(bindingId);
         ipb.setViewFromEval(viewFromEval);
         ipb.setViewToEval(viewToEval);
         ipb.setModelToEval(modelToEval);
@@ -339,6 +364,7 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindInstanceProperty(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -357,6 +383,7 @@ public class JvController implements JvControllerInterface {
             String modelValueVar) throws Exception {
         
         InstancePropertyBinding ipb = new InstancePropertyBinding();
+        ipb.setId(bindingId);
         ipb.setViewFrom(view.trim().length() > 0 ? view : viewFrom);
         ipb.setViewTo(view.trim().length() > 0 ? view : viewTo);
         ipb.setViewFromEval(viewFromEval);
@@ -374,10 +401,12 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindInstanceBean(
+            String bindingId, 
             String view, 
             String model) throws Exception {
         
         InstanceBeanBinding ibb = new InstanceBeanBinding();
+        ibb.setId(bindingId);
         ibb.setViewFrom(view);
         ibb.setViewTo(view);
         ibb.setModelFrom(model);
@@ -386,6 +415,7 @@ public class JvController implements JvControllerInterface {
     }
     
     public void bindInstanceBean(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -404,6 +434,7 @@ public class JvController implements JvControllerInterface {
     }
 
     public void bindInstanceCollection(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -464,11 +495,33 @@ public class JvController implements JvControllerInterface {
     // --- Update view, update model ---
 
     public void updateView(String... beanIds) throws Exception {
+        for (int i=0; i<beanIds.length; i++) {
+            beanIds[i] = (String) elContext.evaluate(beanIds[i]);
+        }
         instanceBinding.updateView(beanIds);
     }
 
     public void updateModel(String... beanIds) throws Exception {
+        // Fazer o eval aqui no JvController e repassar 
+        // o valor ja avaliado
+        for (int i=0; i<beanIds.length; i++) {
+            beanIds[i] = (String) elContext.evaluate(beanIds[i]);
+        }
         instanceBinding.updateModel(beanIds);
+    }
+    
+    // --- Utils ---
+
+    public Object getAssociatedModelInstance(Object viewInstance) 
+            throws Exception {
+        
+        return instanceBinding.getAssociatedModelInstance(viewInstance);
+    }
+
+    public Object getAssociatedViewInstance(Object modelInstance) 
+            throws Exception {
+        
+        return instanceBinding.getAssociatedViewInstance(modelInstance);
     }
 
 }

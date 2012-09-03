@@ -1,6 +1,7 @@
 package ono.leo.jvcontroller.bean.binding;
 
 import ono.leo.jvcontroller.bean.access.BeanInstanceELAccessor;
+import ono.leo.jvcontroller.core.JvControllerClassContext;
 
 /**
  * InstanceBinding.
@@ -10,26 +11,62 @@ import ono.leo.jvcontroller.bean.access.BeanInstanceELAccessor;
  */
 public abstract class InstanceBinding {
 
+    protected String id = "";
+    protected String itemId = "";
+    
+    protected String viewClassAlias = "";
+    protected String modelClassAlias = "";
+    
     protected String viewFrom = "";
     protected String viewTo = "";
     protected String viewFromEval = "";
     protected String viewToEval = "";
     protected String viewValueVar = "";
-    
-    protected String modelTo = ""; 
-    protected String modelFrom = ""; 
-    protected String modelToEval = ""; 
-    protected String modelFromEval = ""; 
-    protected String modelValueVar = ""; 
-    
-    protected String conversorTo = ""; 
-    protected String conversorFrom = ""; 
+    protected String modelTo = "";
+    protected String modelFrom = "";
+    protected String modelToEval = "";
+    protected String modelFromEval = "";
+    protected String modelValueVar = "";
+    protected String conversorTo = "";
+    protected String conversorFrom = "";
     protected String validator = "";
-
-    protected BeanInstanceELAccessor biela 
-            = BeanInstanceELAccessor.getInstance();
-
+    
+    protected BeanInstanceELAccessor elContext = BeanInstanceELAccessor.getInstance();
+    protected JvControllerClassContext classContext = JvControllerClassContext.getInstance();
+    
     public InstanceBinding() {
+    }
+
+    public String getModelClassAlias() {
+        return modelClassAlias;
+    }
+
+    public void setModelClassAlias(String modelClassAlias) {
+        this.modelClassAlias = modelClassAlias;
+    }
+
+    public String getViewClassAlias() {
+        return viewClassAlias;
+    }
+
+    public void setViewClassAlias(String viewClassAlias) {
+        this.viewClassAlias = viewClassAlias;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public String getConversorFrom() {
@@ -136,19 +173,84 @@ public abstract class InstanceBinding {
         this.viewValueVar = viewValueVar;
     }
 
-    public abstract void updateView() throws Exception;
-    public abstract void updateModel() throws Exception;
+    public abstract void updateView(String ... modelUpdateEval) throws Exception;
 
+    public abstract void updateModel(String ... modelUpdateEval) throws Exception;
+
+    public abstract Object getAssociatedModelInstance(Object viewInstance)
+            throws Exception;
+
+    public abstract Object getAssociatedViewInstance(Object modelInstance)
+            throws Exception;
+
+    public Object getModelInstance() throws Exception {
+        Object ret = null;
+        try {
+            String model = modelTo;
+            if (model.indexOf(".")>=0) {
+                model = modelTo.split("\\.")[0];
+            }
+            ret = elContext.evaluate(model);
+            String classAlias = classContext.getClassNames().get(ret.getClass().getName());
+            if (classAlias.trim().length()>0 && !modelClassAlias.equals(classAlias)) {
+                return null;
+            }
+        }
+        catch (Exception e) { }
+        return ret;
+    }
+    
+    public Object getViewInstance() throws Exception {
+        Object ret = null;
+        try {
+            String view = viewFrom;
+            if (view.indexOf(".")>=0) {
+                view = viewFrom.split("\\.")[0];
+            }
+            ret = elContext.evaluate(view);
+            String classAlias = classContext.getClassNames().get(ret.getClass().getName());
+            if (classAlias.trim().length()>0 && !viewClassAlias.equals(classAlias)) {
+                return null;
+            }
+        }
+        catch (Exception e) { }
+        return ret;
+    }
+    
+    public abstract void removeAllChildrens() throws Exception;
+    
     @Override
     public String toString() {
-        return "InstanceBinding{" + "viewFrom=" + viewFrom + ", viewTo=" 
-                + viewTo + ", viewFromEval=" + viewFromEval + ", viewToEval=" 
-                + viewToEval + ", viewValueVar=" + viewValueVar + ", modelTo=" 
-                + modelTo + ", modelFrom=" + modelFrom + ", modelToEval=" 
-                + modelToEval + ", modelFromEval=" + modelFromEval 
-                + ", modelValueVar=" + modelValueVar + ", conversorTo=" 
-                + conversorTo + ", conversorFrom=" + conversorFrom 
-                + ", validator=" + validator + ", biela=" + biela + '}';
+        return "InstanceBinding{" + "viewFrom=" + viewFrom + ", viewTo="
+                + viewTo + ", viewFromEval=" + viewFromEval + ", viewToEval="
+                + viewToEval + ", viewValueVar=" + viewValueVar + ", modelTo="
+                + modelTo + ", modelFrom=" + modelFrom + ", modelToEval="
+                + modelToEval + ", modelFromEval=" + modelFromEval
+                + ", modelValueVar=" + modelValueVar + ", conversorTo="
+                + conversorTo + ", conversorFrom=" + conversorFrom
+                + ", validator=" + validator + ", biela=" + elContext + '}';
+    }
+
+    // TODO esse viewFrom e modelTo precisa pensar em algum jeito de obter de forma correta
+    @Override
+    protected synchronized void finalize() throws Throwable {
+        /* Nao ficou bacana colocar aqui
+        System.out.println("DESTRUINDO InstanceBinding" + this + " ...");
+        try {
+            String viewId = viewFrom.split("\\.")[0];
+            String modelId = modelTo.split("\\.")[0];
+            Iterator i = elContext.getBeans().entrySet().iterator();
+            while (i.hasNext()) {
+                Entry<String, Object> es = (Entry<String, Object>) i.next();
+                if (es.getKey().equals(viewId) || es.getKey().equals(modelId)) {
+                    i.remove();
+                    System.out.println("DESTRUINDO InstanceBinding -> REMOVENDO" + es + " ...");
+                }
+            }
+        } catch (Exception e) { }
+         * 
+         */
+        super.finalize();
     }
     
 }

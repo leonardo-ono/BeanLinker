@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -62,6 +63,17 @@ public class Peddet implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peddet", fetch= FetchType.EAGER)
     private List<Pedgradtam> pedgradtamList;
 
+    @Transient
+    private Produtos produto;
+
+    public Produtos getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produtos produto) {
+        this.produto = produto;
+    }
+    
     public Peddet() {
     }
 
@@ -210,5 +222,11 @@ public class Peddet implements Serializable {
     public String toString() {
         return "compra.pedido.entidades.Peddet[ peddetPK=" + peddetPK + " ]";
     }
+
+    //@Override
+    //protected void finalize() throws Throwable {
+    //    System.out.println("Objeto " + this + " vai ser destruido ...");
+    //    super.finalize();
+    //}
     
 }

@@ -20,8 +20,8 @@ public class InstanceActionBinding {
     private String updateModel = "";
     private String label = "";
 
-    private static JvController jc = JvController.getInstance();
-    private static BeanInstanceELAccessor elContext = jc.getELContext();
+    private static final JvController jc = JvController.getInstance();
+    private static final BeanInstanceELAccessor elContext = jc.getELContext();
 
     public String getEval() {
         return eval;

@@ -68,6 +68,10 @@ public class ClassCollectionBinding extends ClassBinding {
         icb.setViewInvokeAdd(replaceClassToInstance(viewInvokeAdd, beanBinding.viewFrom, viewClassAlias));
         icb.setViewInvokeRemove(replaceClassToInstance(viewInvokeRemove, beanBinding.viewFrom, viewClassAlias));
         icb.setViewItemType(viewItemType);
+        icb.setId(replaceClassToInstance(id, beanBinding.id, modelClassAlias));
+        icb.setItemId(replaceClassToInstance(itemId, beanBinding.itemId, modelClassAlias));
+        icb.setViewClassAlias(viewClassAlias);
+        icb.setModelClassAlias(modelClassAlias);
         return icb;
     }
     

@@ -22,26 +22,26 @@ public class Controller {
         jc.registerControllerClass("Controller", "teste.controller.Controller");
         jc.registerConversorClass("IntegerConversor", "teste.conversor.IntegerConversor");
         
-        jc.bindClassProperty("EnderecoView.textBairro.text", "Endereco.bairro", "", "");
-        jc.bindClassProperty("EnderecoView.textCEP.text", "Endereco.cep", "", "");
-        jc.bindClassProperty("EnderecoView.textCidade.text", "Endereco.cidade", "", "");
-        jc.bindClassProperty("EnderecoView.textLogradouro.text", "Endereco.logradouro", "", "");
-        jc.bindClassProperty("EnderecoView.textNumero.text", "Endereco.numero", "integerConversor", "");
-        jc.bindClassProperty("EnderecoView.textUF.text", "Endereco.uf", "", "");
+        jc.bindClassProperty("", "EnderecoView.textBairro.text", "Endereco.bairro", "", "");
+        jc.bindClassProperty("", "EnderecoView.textCEP.text", "Endereco.cep", "", "");
+        jc.bindClassProperty("", "EnderecoView.textCidade.text", "Endereco.cidade", "", "");
+        jc.bindClassProperty("", "EnderecoView.textLogradouro.text", "Endereco.logradouro", "", "");
+        jc.bindClassProperty("", "EnderecoView.textNumero.text", "Endereco.numero", "integerConversor", "");
+        jc.bindClassProperty("", "EnderecoView.textUF.text", "Endereco.uf", "", "");
         jc.bindClassAction("EnderecoView.buttonExcluir.action", "model.excluir(Endereco)", "", "", "", "Excluir Endereco");
 
-        jc.bindClassProperty("ClienteView.textNome.text", "Cliente.nome", "", "");
+        jc.bindClassProperty("", "ClienteView.textNome.text", "Cliente.nome", "", "");
         // jc.bindClassCollection("ClienteView.enderecoViews", "Cliente.enderecos", "ClienteView.addEnderecoView", "ClienteView.removeEnderecoView");
-        jc.bindClassCollection("", "Cliente.enderecos", "ClienteView.addEnderecoView", "ClienteView.removeEnderecoView", "EnderecoView");
+        jc.bindClassCollection("", "controller.concat('item', modelItem.id)", "", "Cliente.enderecos", "ClienteView.addEnderecoView", "ClienteView.removeEnderecoView", "EnderecoView");
         
-        jc.bindClassBean("View.clienteView", "Model.cliente");
+        jc.bindClassBean("", "View.clienteView", "Model.cliente");
         
         jc.newInstance("model", "Model");
         jc.newInstance("view", "View");
         jc.newInstance("controller", "Controller");
         jc.newInstance("integerConversor", "IntegerConversor");
         
-        jc.bindInstanceBean("view", "model");
+        jc.bindInstanceBean("", "view", "model");
         
         jc.getELContext().evaluate("view.setVisible(true)");
         
@@ -51,6 +51,10 @@ public class Controller {
         
         jc.updateView();
         
+    }
+    
+    public String concat(Object a, Object b) {
+        return a.toString() + b.toString();
     }
 
 }

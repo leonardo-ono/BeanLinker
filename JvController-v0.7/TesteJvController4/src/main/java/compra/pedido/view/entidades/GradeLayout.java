@@ -1,5 +1,7 @@
 package compra.pedido.view.entidades;
 
+import compra.pedido.view.entidades.GradeView.AddCor;
+import compra.pedido.view.entidades.GradeView.AddTamanho;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -13,8 +15,8 @@ import java.util.Map;
  */
 public class GradeLayout implements LayoutManager {
         
-    private int xOffset = 50;
-    private int yOffset = 20;
+    private int xOffset = 100;
+    private int yOffset = 40;
     private int width = 50;
     private int height = 20;
 
@@ -48,8 +50,8 @@ public class GradeLayout implements LayoutManager {
             }
         }
 
-        dim.width = (colPosMax + 2) * width +xOffset;
-        dim.height = (linPosMax + 2) * height +yOffset;
+        dim.width = (colPosMax + 4) * width +xOffset;
+        dim.height = (linPosMax + 4) * height +yOffset;
         return dim;
     }
 
@@ -90,6 +92,18 @@ public class GradeLayout implements LayoutManager {
                 int x = colPos * width + xOffset;
                 int y = linPos * height + yOffset;
                 qtde.setBounds(x, y, width+1, height+1);
+            }
+            if (c instanceof AddCor) { 
+                AddCor addCor = (AddCor) c;
+                int x = 0 * width + xOffset;
+                int y = (corPosMap.size()+1) * height + yOffset;
+                addCor.setBounds(x - 30, y, width+31, height+5);
+            }
+            if (c instanceof AddTamanho) { 
+                AddTamanho addTamanho = (AddTamanho) c;
+                int x = (tamPosMap.size()+1) * width + xOffset;
+                int y = 0 * height + yOffset;
+                addTamanho.setBounds(x, y, width+1, height+5);
             }
         }
     }

@@ -32,12 +32,14 @@ public interface JvControllerInterface {
     // --- Binding between classes ---
     
     public void bindClassProperty(
+            String bindingId, 
             String view, 
             String model, 
             String conversor, 
             String validator) throws Exception;
 
     public void bindClassProperty(
+            String bindingId, 
             String viewFromEval, 
             String viewToEval, 
             String modelFromEval, 
@@ -48,6 +50,7 @@ public interface JvControllerInterface {
             String modelVar) throws Exception;
 
     public void bindClassProperty(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -66,10 +69,12 @@ public interface JvControllerInterface {
             String modelValueVar) throws Exception;
     
     public void bindClassBean(
+            String bindingId, 
             String view, 
             String model) throws Exception;
     
     public void bindClassBean(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -85,6 +90,8 @@ public interface JvControllerInterface {
             String instance) throws Exception;
             
     public void bindClassCollection(
+            String bindingIdEval, 
+            String itemBindingIdEval, 
             String view, 
             String model,
             String viewInvokeAdd,
@@ -92,6 +99,7 @@ public interface JvControllerInterface {
             String viewItemType) throws Exception;
 
     public void bindClassCollection(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -113,12 +121,14 @@ public interface JvControllerInterface {
     public void newInstance(String beanId, String classAlias) throws Exception;
     
     public void bindInstanceProperty(
+            String bindingId, 
             String view, 
             String model, 
             String conversor, 
             String validator) throws Exception;
 
     public void bindInstanceProperty(
+            String bindingId, 
             String viewFromEval, 
             String viewToEval, 
             String modelToEval, 
@@ -129,6 +139,7 @@ public interface JvControllerInterface {
             String modelValueVar) throws Exception;
     
     public void bindInstanceProperty(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -147,10 +158,12 @@ public interface JvControllerInterface {
             String modelValueVar) throws Exception;
     
     public void bindInstanceBean(
+            String bindingId, 
             String view, 
             String model) throws Exception;
 
     public void bindInstanceBean(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -166,6 +179,7 @@ public interface JvControllerInterface {
             String instance) throws Exception;
             
     public void bindInstanceCollection(
+            String bindingId, 
             String view, 
             String viewFrom, 
             String viewTo, 
@@ -204,5 +218,14 @@ public interface JvControllerInterface {
     
     public void updateView(String ... beanIds) throws Exception;
     public void updateModel(String ... beanIds) throws Exception;    
+
+    // --- Utils ---
+    
+    public Object getAssociatedModelInstance(Object viewInstance) 
+            throws Exception;
+    
+    public Object getAssociatedViewInstance(Object modelInstance) 
+            throws Exception;
+    
     
 }

@@ -10,18 +10,40 @@
  */
 package compra.pedido.view.entidades;
 
+import javax.swing.JTextField;
+
 /**
  *
  * @author leo
  */
 public class GradeView extends javax.swing.JPanel {
 
+    class AddCor extends JTextField {
+    }
+    
+    class AddTamanho extends JTextField {
+    }
+
     private GradeLayout gradeLayout = new GradeLayout();
+
+    private AddCor addCor = new AddCor();
+    private AddTamanho addTamanho = new AddTamanho();
+
+    public AddCor getAddCor() {
+        return addCor;
+    }
+
+    public AddTamanho getAddTamanho() {
+        return addTamanho;
+    }
+    
     /** Creates new form GradeView */
     public GradeView() {
         initComponents();
         
         setLayout(gradeLayout);
+        add(addCor);
+        add(addTamanho);
         /*
         add(new PedgradtamView(1, 1, "1"));
         add(new PedgradtamView(2, 2, "2"));

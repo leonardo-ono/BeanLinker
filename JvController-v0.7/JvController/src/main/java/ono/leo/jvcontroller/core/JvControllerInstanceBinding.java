@@ -1,8 +1,11 @@
 package ono.leo.jvcontroller.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 import ono.leo.jvcontroller.bean.access.BeanInstanceELAccessor;
 import ono.leo.jvcontroller.bean.binding.ClassActionBinding;
 import ono.leo.jvcontroller.bean.binding.ClassBinding;
@@ -32,9 +35,6 @@ public class JvControllerInstanceBinding {
     private static JvControllerClassBinding classBinding
             = JvControllerClassBinding.getInstance();
     
-    private static JvControllerInstanceBinding instance =
-            new JvControllerInstanceBinding();
-    
     public JvControllerInstanceBinding() {
     }
 
@@ -48,8 +48,23 @@ public class JvControllerInstanceBinding {
         bindings.put(propertyBinding.getViewFrom(), propertyBinding);
     }
 
-    public void addBeanBinding(InstanceBeanBinding beanBinding)  throws Exception {
+    public void removePropertyBinding(InstancePropertyBinding propertyBinding) 
+            throws Exception {
+        
+        bindings.values().remove(propertyBinding);
+    }
+
+    public void addBeanBinding(InstanceBeanBinding beanBinding)  
+            throws Exception {
+        
         addBeanBinding(beanBinding, true);
+    }
+
+    public void removeBeanBinding(InstanceBeanBinding beanBinding) 
+            throws Exception {
+        
+        beanBinding.removeAllChildrens();
+        bindings.values().remove(beanBinding);
     }
     
     private void addBeanBinding(InstanceBeanBinding beanBinding, boolean first) 
@@ -62,7 +77,8 @@ public class JvControllerInstanceBinding {
         String viewClassName = viewObj.getClass().getName();
         String viewClassAlias = classContext.getClassNames().get(viewClassName);
         if (viewClassAlias == null) {
-            throw new Exception("Class  \"" + viewClassName + "\" not registered !");
+            throw new Exception(
+                    "Class  \"" + viewClassName + "\" not registered !");
         }
         String modeClassName = "";
         String modelClassAlias = "";
@@ -92,15 +108,25 @@ public class JvControllerInstanceBinding {
             }
         }
         if (first) {
-            bindings.put(beanBinding.getViewFrom(), beanBinding);
+            String id = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            if (beanBinding.getId().trim().length() > 0) {
+                id = beanBinding.getId().trim();
+            }
+            bindings.put(id, beanBinding);
         }
         
-        // Create action's if necessary TODO ?
-        List<ClassActionBinding> classActionBindings = classBinding.getActionClassBindings(viewClassAlias);
+        // Create action's if necessary 
+        // TODO - is this the right place ?
+        List<ClassActionBinding> classActionBindings 
+                = classBinding.getActionClassBindings(viewClassAlias);
+        
         for (ClassActionBinding classActionBinding : classActionBindings) {
             classActionBinding.setViewClassAlias(viewClassAlias);
             classActionBinding.setModelClassAlias(modelClassAlias); 
-            InstanceActionBinding iab = classActionBinding.createInstanceActionBinding(beanBinding.getViewFrom(), beanBinding.getModelTo());
+            InstanceActionBinding iab = classActionBinding
+                    .createInstanceActionBinding(beanBinding.getViewFrom()
+                    , beanBinding.getModelTo());
+            
             iab.createAndBindAction();
         }
                 
@@ -111,17 +137,89 @@ public class JvControllerInstanceBinding {
         
         bindings.put(collectionBinding.getViewFrom(), collectionBinding);
     }
+
+    public void removeCollectionBinding(
+            InstanceCollectionBinding collectionBinding) throws Exception {
+        
+        bindings.values().remove(collectionBinding);
+    }
+    
+    public void removeAllBindings() throws Exception {
+        Iterator<Entry<String, InstanceBinding>> i = bindings.entrySet().iterator();
+        while (i.hasNext()) {
+            InstanceBinding ib = i.next().getValue();
+            ib.removeAllChildrens();
+            i.remove();
+        }
+    }
     
     public void updateView(String ... beanIds) throws Exception {
+        String bindingId = "";
+        if (beanIds.length > 0) {
+            bindingId = beanIds[0].trim();
+        }
+        if (bindingId.trim().length() > 0) {
+            bindingId = bindingId.split("\\.")[0];
+            if (beanIds[0].contains(".")) {
+                beanIds[0] = beanIds[0].replace(bindingId + ".", "");
+            }
+            else {
+                beanIds[0] = beanIds[0].replace(bindingId, "");
+            }
+        }
         for (InstanceBinding binding : bindings.values()) {
-            binding.updateView();
+            if (binding.getId().equals(bindingId) || bindingId.length()==0) {
+                binding.updateView(beanIds);
+            }
         }
     }
     
     public void updateModel(String ... beanIds) throws Exception {
+        String bindingId = "";
+        if (beanIds.length > 0) {
+            bindingId = beanIds[0].trim();
+        }
+        if (bindingId.trim().length() > 0) {
+            bindingId = bindingId.split("\\.")[0];
+            if (beanIds[0].contains(".")) {
+                beanIds[0] = beanIds[0].replace(bindingId + ".", "");
+            }
+            else {
+                beanIds[0] = beanIds[0].replace(bindingId, "");
+            }
+        }
         for (InstanceBinding binding : bindings.values()) {
-            binding.updateModel();
+            if (binding.getId().equals(bindingId) || bindingId.length()==0) {
+                binding.updateModel(beanIds);
+            }
         }
     }
+    
+    // TODO
+    public Object getAssociatedModelInstance(Object viewInstance) 
+            throws Exception {
+        
+        Object ret = null;
+        for (InstanceBinding binding : bindings.values()) {
+            ret = binding.getAssociatedModelInstance(viewInstance);
+            if (ret != null) {
+                return ret;
+            }
+        }
+        return ret;
+    }
+
+    public Object getAssociatedViewInstance(Object modelInstance) 
+            throws Exception {
+        
+        Object ret = null;
+        for (InstanceBinding binding : bindings.values()) {
+            ret = binding.getAssociatedViewInstance(modelInstance);
+            if (ret != null) {
+                return ret;
+            }
+        }
+        return ret;
+    }    
     
 }

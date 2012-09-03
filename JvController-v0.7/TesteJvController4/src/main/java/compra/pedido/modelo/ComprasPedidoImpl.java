@@ -33,7 +33,8 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
     private Pedcab pedidoSelecionado = new Pedcab();
     private Peddet itemSelecionado;
     private Pedgradqtde[][][] quantidade;
-
+    private ProdutoDao produtoDao = new ProdutoDao();;
+    
     public ComprasPedidoImpl() {
     }
 
@@ -67,7 +68,8 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
             int qtdeDeCores = itemQtde.getPedgradcorList().size();
             int qtdeDeTamanhos = itemQtde.getPedgradtamList().size();
             if (quantidade == null) {
-                quantidade = new Pedgradqtde[qtdeDeItens][qtdeDeTamanhos][qtdeDeCores];
+                quantidade = new Pedgradqtde
+                        [qtdeDeItens][qtdeDeTamanhos][qtdeDeCores];
             }
             for (int c = 0; c < qtdeDeCores; c++) {
                 Pedgradcor cor = itemQtde.getPedgradcorList().get(c);
@@ -76,8 +78,12 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
                     int corCod = cor.getPedgradcorPK().getCorCod();
                     int tamCod = tam.getPedgradtamPK().getTamCod();
                     for (Pedgradqtde q : itemQtde.getPedgradqtdeList()) {
-                        int corCodDoQ = q.getPedgradcor().getPedgradcorPK().getCorCod();
-                        int tamCodDoQ = q.getPedgradtam().getPedgradtamPK().getTamCod();
+                        int corCodDoQ = q.getPedgradcor()
+                                .getPedgradcorPK().getCorCod();
+                        
+                        int tamCodDoQ = q.getPedgradtam()
+                                .getPedgradtamPK().getTamCod();
+                        
                         if (tamCod == tamCodDoQ && corCod == corCodDoQ) {
                             quantidade[i][t][c] = q;
                         }
@@ -85,7 +91,9 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
                     if (quantidade[i][t][c] == null) {
                         int pedCod = itemQtde.getPeddetPK().getPedCod();
                         String proRef = itemQtde.getPeddetPK().getProRef();
-                        quantidade[i][t][c] = new Pedgradqtde(pedCod, proRef, tamCod, corCod);
+                        quantidade[i][t][c] = new Pedgradqtde(
+                                pedCod, proRef, tamCod, corCod);
+                        
                         quantidade[i][t][c].setPeddet(itemQtde);
                         quantidade[i][t][c].setPedgradcor(cor);
                         quantidade[i][t][c].setPedgradtam(tam);
@@ -108,11 +116,15 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
     }
 
     @Override
-    public void iniciarPedidoNovo(int forCod, int opeCod, char tipo) throws Exception {
+    public void iniciarPedidoNovo(int forCod, int opeCod, char tipo) 
+            throws Exception {
+        
         if (pedidoSelecionado != null) {
             throw new Exception("Um pedido esta em aberto !");
         }
-        emf = Persistence.createEntityManagerFactory("compra-pedido-entidadesPU");
+        emf = Persistence.createEntityManagerFactory(
+                "compra-pedido-entidadesPU");
+        
         em = emf.createEntityManager();
 
         resetarAtributosPrivadosDoPedido();
@@ -141,7 +153,9 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
             seqStr = seqStr.substring(seqStr.length() - 4, seqStr.length());
             String procodStr = forCod + seqStr;
             pedNum = Integer.parseInt(procodStr);
-            Query q = em.createQuery("select p from Pedcab p where p.pedNum=:pedNum");
+            Query q = em.createQuery(
+                    "select p from Pedcab p where p.pedNum=:pedNum");
+            
             q.setParameter("pedNum", pedNum);
             q.setMaxResults(1);
             try {
@@ -155,7 +169,8 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
             continue;
         }
         if (p != null) {
-            throw new Exception("Nao ha mais sequencia livre para este fornecedor !");
+            throw new Exception(
+                    "Nao ha mais sequencia livre para este fornecedor !");
         }
         pedidoNovo.setPedNum(pedNum);
 
@@ -171,11 +186,15 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
         //if (pedidoSelecionado != null) {
         //    throw new Exception("Um pedido esta em aberto !");
         //}
-        emf = Persistence.createEntityManagerFactory("compra-pedido-entidadesPU");
+        emf = Persistence.createEntityManagerFactory(
+                "compra-pedido-entidadesPU");
+        
         em = emf.createEntityManager();
 
         resetarAtributosPrivadosDoPedido();
-        Query q = em.createQuery("select p from Pedcab p where p.pedNum=:pedNum");
+        Query q = em.createQuery(
+                "select p from Pedcab p where p.pedNum=:pedNum");
+        
         q.setParameter("pedNum", pedNum);
         pedidosAbertos = q.getResultList();
         if (pedidosAbertos.isEmpty()) {
@@ -184,7 +203,11 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
         for (Pedcab pedcab : pedidosAbertos) {
             if (pedcab.getLojaCod() == 0) {
                 pedidoSelecionado = pedcab;
-                break;
+            }
+            
+            // Seta os produtos
+            for (Peddet peddet : pedcab.getPeddetList()) {
+                peddet.setProduto(produtoDao.carregar(peddet.getProCod()));
             }
         }
     }
@@ -238,7 +261,9 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
                 qtde.setPedgradtam(null);
                 qtde.setPedgradcor(null);
             }
-            if (itemSelecionado != null && itemSelecionado.getProCod() == pe.getProCod()) {
+            if (itemSelecionado != null 
+                    && itemSelecionado.getProCod() == pe.getProCod()) {
+                
                 itemSelecionado = pe;
             }
         }
@@ -342,8 +367,23 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
                 int pedCod = ped.getPedCod();
                 String proRef = itemSelecionado.getPeddetPK().getProRef();
                 Pedgradcor corNovo = new Pedgradcor(pedCod, proRef, corCod);
-                corNovo.setLinPos(itemSelecionado.getPedgradcorList().size() + 1);
+                corNovo.setPeddet(item);
+                corNovo.setLinPos(
+                        itemSelecionado.getPedgradcorList().size() + 1);
+                
                 item.getPedgradcorList().add(corNovo);
+
+                // Cria as quantidades
+                for (int q=0; q<item.getPedgradtamList().size(); q++) {
+                    Pedgradtam pedgradtam = item.getPedgradtamList().get(q);
+                    Pedgradqtde qtde = new Pedgradqtde(pedCod, proRef
+                            , pedgradtam.getPedgradtamPK().getTamCod(), corCod);
+                    qtde.setPeddet(item);
+                    qtde.setPedgradcor(corNovo);
+                    qtde.setPedgradtam(pedgradtam);
+                    item.getPedgradqtdeList().add(qtde);
+                }
+                
                 em.persist(corNovo);
             }
         }
@@ -403,8 +443,23 @@ public class ComprasPedidoImpl implements ComprasPedido, Serializable {
                 int pedCod = ped.getPedCod();
                 String proRef = itemSelecionado.getPeddetPK().getProRef();
                 Pedgradtam tamNovo = new Pedgradtam(pedCod, proRef, tamCod);
-                tamNovo.setColPos(itemSelecionado.getPedgradtamList().size() + 1);
+                tamNovo.setPeddet(item);
+                tamNovo.setColPos(
+                        itemSelecionado.getPedgradtamList().size() + 1);
+                
                 item.getPedgradtamList().add(tamNovo);
+                
+                // Cria as quantidades
+                for (int q=0; q<item.getPedgradcorList().size(); q++) {
+                    Pedgradcor pedgradcor = item.getPedgradcorList().get(q);
+                    Pedgradqtde qtde = new Pedgradqtde(pedCod, proRef, tamCod
+                            , pedgradcor.getPedgradcorPK().getCorCod());
+                    qtde.setPedgradcor(pedgradcor);
+                    qtde.setPedgradtam(tamNovo);
+                    qtde.setPeddet(item);
+                    item.getPedgradqtdeList().add(qtde);
+                }
+                
                 em.persist(tamNovo);
             }
         }

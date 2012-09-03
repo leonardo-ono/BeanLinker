@@ -31,7 +31,10 @@ public class ClassBeanBinding extends ClassBinding {
         ibb.setValidator(validator);
         ibb.setViewValueVar(viewValueVar);
         ibb.setModelValueVar(modelValueVar);
-        
+        ibb.setId(replaceClassToInstance(id, beanBinding.id, modelClassAlias));
+        ibb.setItemId(replaceClassToInstance(itemId, beanBinding.itemId, modelClassAlias));
+        ibb.setModelClassAlias(modelClassAlias);
+        ibb.setViewClassAlias(viewClassAlias);
         return ibb;
     }
     

@@ -8,6 +8,9 @@ package ono.leo.jvcontroller.bean.binding;
  */
 public abstract class ClassBinding {
     
+    protected String id = "";
+    protected String itemId = "";
+    
     protected String viewClassAlias = "";
     protected String modelClassAlias = "";
     
@@ -26,8 +29,24 @@ public abstract class ClassBinding {
     protected String viewValueVar = "";
     protected String modelValueVar = "";
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getModelValueVar() {
         return modelValueVar;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
     }
 
     public void setModelValueVar(String modelValueVar) {
@@ -163,7 +182,7 @@ public abstract class ClassBinding {
                     valueComplete += instanceValue + c;
                 }
                 else {
-                    String cc = (classValue.length()-1 == i ? "" : c + "");
+                    String cc = (classValue.length()-1==i && Character.isLetterOrDigit(c) ? "" : c + "");
                     valueComplete += value + cc;
                 }
                 value = "";

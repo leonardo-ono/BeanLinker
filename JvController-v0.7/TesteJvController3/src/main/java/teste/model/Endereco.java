@@ -6,12 +6,21 @@ package teste.model;
  */
 public class Endereco {
 
+    private long id = System.currentTimeMillis();
     private String logradouro = "RUA XXX";
     private int numero = 83;
     private String bairro = "CIDADE ADEMAR";
     private String cidade = "SAO PAULO";
     private String uf = "SP";
     private String cep = "04405000";
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getBairro() {
         return bairro;

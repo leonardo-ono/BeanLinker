@@ -34,6 +34,10 @@ public class PedcabView extends javax.swing.JPanel {
         panel.remove(peddetView);
         panel.updateUI();
     }
+
+    public JTextField getTextCodigoDaLoja() {
+        return textCodigoDaLoja;
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -47,6 +51,8 @@ public class PedcabView extends javax.swing.JPanel {
         textReferencia = new javax.swing.JTextField();
         buttonAbrir = new javax.swing.JButton();
         buttonSalvar = new javax.swing.JButton();
+        textCodigoDaLoja = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         jLabel1.setText("Numero do pedido:");
 
@@ -60,6 +66,8 @@ public class PedcabView extends javax.swing.JPanel {
         buttonAbrir.setText("Abrir");
 
         buttonSalvar.setText("Salvar");
+
+        jLabel3.setText("Cod. Loja:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -80,7 +88,11 @@ public class PedcabView extends javax.swing.JPanel {
                 .addComponent(buttonAbrir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonSalvar)
-                .addContainerGap(239, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textCodigoDaLoja, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(75, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -91,7 +103,9 @@ public class PedcabView extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(textNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonAbrir)
-                    .addComponent(buttonSalvar))
+                    .addComponent(buttonSalvar)
+                    .addComponent(textCodigoDaLoja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textReferencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -105,8 +119,10 @@ public class PedcabView extends javax.swing.JPanel {
     private javax.swing.JButton buttonSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panel;
+    private javax.swing.JTextField textCodigoDaLoja;
     private javax.swing.JTextField textNumero;
     private javax.swing.JTextField textReferencia;
     // End of variables declaration//GEN-END:variables

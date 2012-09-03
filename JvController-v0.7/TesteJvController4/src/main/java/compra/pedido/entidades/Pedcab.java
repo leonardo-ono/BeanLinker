@@ -265,5 +265,10 @@ public class Pedcab implements Serializable {
         return "compra.pedido.entidades.Pedcab[ pedCod=" + pedCod + " ]";
     }
 
+    //@Override
+    //protected void finalize() throws Throwable {
+    //    System.out.println("Objeto " + this + " vai ser destruido ...");
+    //    super.finalize();
+    //}
     
 }

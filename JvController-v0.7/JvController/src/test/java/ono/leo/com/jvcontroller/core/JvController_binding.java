@@ -51,8 +51,8 @@ import org.junit.Test;
         jc.registerViewClass("IntegerConversor", "ono.leo.com.jvcontroller.test.conversor.IntegerConversor");
         
         // Bind between classes
-        jc.bindClassProperty("BView.a", "B.a", "conversor", "validator");
-        jc.bindClassProperty("BView.b", "B.b", "conversor", "validator");
+        jc.bindClassProperty("", "BView.a", "B.a", "conversor", "validator");
+        jc.bindClassProperty("", "BView.b", "B.b", "conversor", "validator");
         
         // Create new instances
         jc.newInstance("bView", "BView");
@@ -66,7 +66,7 @@ import org.junit.Test;
         // Bind between instances
         // jc.bindInstanceProperty("bView.a", "bModel.a", "conversor", "");
         // jc.bindInstanceProperty("bView.b", "bModel.b", "", "");
-        jc.bindInstanceProperty("bView.a", "bView.setA(am)", "bModel.setA(av)", "bModel.a", "conversor", "", "av", "am");
+        jc.bindInstanceProperty("", "bView.a", "bView.setA(am)", "bModel.setA(av)", "bModel.a", "conversor", "", "av", "am");
 
         // Update view
         jc.updateView();
@@ -92,12 +92,12 @@ import org.junit.Test;
         jc.registerConversorClass("IntegerConversor", "ono.leo.com.jvcontroller.test.conversor.IntegerConversor");
         
         // Bind between classes
-        jc.bindClassProperty("BView.a", "B.a", "conversor", "");
-        jc.bindClassProperty("BView.b", "B.b", "", "");
-        jc.bindClassBean("BView.cview", "B.c");
+        jc.bindClassProperty("", "BView.a", "B.a", "conversor", "");
+        jc.bindClassProperty("", "BView.b", "B.b", "", "");
+        jc.bindClassBean("", "BView.cview", "B.c");
 
-        jc.bindClassProperty("CView.a", "C.a", "conversor", "");
-        jc.bindClassProperty("CView.b", "C.b", "", "");
+        jc.bindClassProperty("", "CView.a", "C.a", "conversor", "");
+        jc.bindClassProperty("", "CView.b", "C.b", "", "");
         
         
         // Create new instances
@@ -113,7 +113,7 @@ import org.junit.Test;
         jc.getELContext().set("bModel.c.b", "KKK");
         
         // Bind between instances
-        jc.bindInstanceBean("bView", "bModel");
+        jc.bindInstanceBean("", "bView", "bModel");
 
         // Update view
         jc.updateView();
@@ -146,12 +146,12 @@ import org.junit.Test;
         jc.registerConversorClass("IntegerConversor", "ono.leo.com.jvcontroller.test.conversor.IntegerConversor");
         
         // Bind between classes
-        jc.bindClassProperty("AView.a", "A.a", "conversor", "");
-        jc.bindClassProperty("AView.b", "A.b", "", "");
-        jc.bindClassCollection("AView.bviews", "A.bs", "", "", "");
+        jc.bindClassProperty("", "AView.a", "A.a", "conversor", "");
+        jc.bindClassProperty("", "AView.b", "A.b", "", "");
+        jc.bindClassCollection("", "", "AView.bviews", "A.bs", "", "", "");
 
-        jc.bindClassProperty("BView.a", "B.a", "conversor", "");
-        jc.bindClassProperty("BView.b", "B.b", "", "");
+        jc.bindClassProperty("", "BView.a", "B.a", "conversor", "");
+        jc.bindClassProperty("", "BView.b", "B.b", "", "");
         
         
         // Create new instances
@@ -160,7 +160,7 @@ import org.junit.Test;
         jc.newInstance("conversor", "IntegerConversor");
         
         // Bind between instances
-        jc.bindInstanceBean("aView", "aModel");
+        jc.bindInstanceBean("", "aView", "aModel");
 
         // Set values to model
         jc.getELContext().set("aModel.a", 99);

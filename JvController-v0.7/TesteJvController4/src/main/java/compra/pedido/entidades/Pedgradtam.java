@@ -115,5 +115,11 @@ public class Pedgradtam implements Serializable {
     public String toString() {
         return "compra.pedido.entidades.Pedgradtam[ pedgradtamPK=" + pedgradtamPK + " ]";
     }
+
+    //@Override
+    //protected void finalize() throws Throwable {
+    //    System.out.println("Objeto " + this + " vai ser destruido ...");
+    //    super.finalize();
+    //}
     
 }

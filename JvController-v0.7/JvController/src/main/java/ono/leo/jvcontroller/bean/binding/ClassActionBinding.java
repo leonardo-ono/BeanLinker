@@ -99,8 +99,15 @@ public class ClassActionBinding {
         evalRepl = replaceClassToInstance(evalRepl, modelInstanceValue, modelClassAlias);
         iab.setEval(evalRepl);
         iab.setEvalRet(evalRet);
-        iab.setUpdateModel(updateModel);
-        iab.setUpdateView(updateView);
+
+        evalRepl = replaceClassToInstance(updateModel, modelInstanceValue, modelClassAlias);
+        evalRepl = replaceClassToInstance(evalRepl, viewInstanceValue, viewClassAlias);
+        iab.setUpdateModel(evalRepl);
+
+        evalRepl = replaceClassToInstance(updateView, modelInstanceValue, modelClassAlias);
+        evalRepl = replaceClassToInstance(evalRepl, viewInstanceValue, viewClassAlias);
+        iab.setUpdateView(evalRepl);
+        
         iab.setLabel(label);
         return iab;
     }

@@ -2,6 +2,7 @@ package ono.leo.jvcontroller.bean.access;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * BeanInstanceELAccessor.
@@ -13,6 +14,7 @@ public class BeanInstanceELAccessor extends BeanInstanceContextAccessor {
 
     private static BeanInstanceELAccessor instance;
 
+    
     public synchronized static BeanInstanceELAccessor getInstance() {
         if (instance == null) {
             instance = new BeanInstanceELAccessor();
@@ -27,6 +29,11 @@ public class BeanInstanceELAccessor extends BeanInstanceContextAccessor {
         else {
             set(property, evaluate(el));
         }
+    }
+
+    @Override
+    public Map<String, Object> getBeans() {
+        return super.getBeans();
     }
     
     public Object evaluate(String el) throws Exception {
