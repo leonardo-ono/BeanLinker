@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: ono.leo.com.jvcontroller.core.JvController_classContextTest
--------------------------------------------------------------------------------
-Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.108 sec
